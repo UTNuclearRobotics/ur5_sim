@@ -81,28 +81,28 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='default'>
-      <sim_time>688 132000000</sim_time>
-      <real_time>25 541868067</real_time>
-      <wall_time>1517335674 624341383</wall_time>
-      <iterations>25220</iterations>
+      <sim_time>820 223000000</sim_time>
+      <real_time>18 746886882</real_time>
+      <wall_time>1517341981 756771080</wall_time>
+      <iterations>18418</iterations>
       <model name='bookshelf_0'>
-        <pose frame=''>-0.410047 0.804794 0 0 -0 0.901138</pose>
+        <pose frame=''>-0.410047 0.804794 0 0 -0 0.603416</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>-0.410047 0.804794 0 0 -0 0.901138</pose>
+          <pose frame=''>-0.410047 0.804794 0 0 -0 0.603416</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='drill_0'>
-        <pose frame=''>-0.171139 0.617435 0.437922 7e-06 2e-06 0.821193</pose>
+        <pose frame=''>-0.170774 0.61735 0.437932 2e-06 -4e-06 0.810968</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>-0.171139 0.617435 0.437922 7e-06 2e-06 0.821193</pose>
+          <pose frame=''>-0.170774 0.61735 0.437932 2e-06 -4e-06 0.810968</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 1e-06 -0 2e-05</acceleration>
-          <wrench>0 0 -14.7247 0 -0 0</wrench>
+          <acceleration>-2.6728 0.183714 0.740279 1.28724 -0.824103 -0.321839</acceleration>
+          <wrench>-4.01594 0.276034 1.11228 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -121,7 +121,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>5.30353 -1.03943 3.77772 0 0.515643 2.50019</pose>
+        <pose frame=''>1.21083 -0.366835 2.36871 -0 0.771643 2.37619</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
