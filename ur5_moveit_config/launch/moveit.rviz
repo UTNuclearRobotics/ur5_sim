@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 272
@@ -70,6 +71,11 @@ Visualization Manager:
         Color Enabled: false
         Interrupt Display: false
         Links:
+          2_finger_140_gripper_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           All Links Enabled: true
           Expand Joint Details: false
           Expand Link Details: false
@@ -171,6 +177,11 @@ Visualization Manager:
       Scene Robot:
         Attached Body Color: 150; 50; 150
         Links:
+          2_finger_140_gripper_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           All Links Enabled: true
           Expand Joint Details: false
           Expand Link Details: false
@@ -240,6 +251,8 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
+        2_finger_140_gripper_link:
+          Value: false
         All Enabled: false
         base:
           Value: false
@@ -252,7 +265,7 @@ Visualization Manager:
         shoulder_link:
           Value: false
         temoto_end_effector:
-          Value: true
+          Value: false
         tool0:
           Value: false
         upper_arm_link:
@@ -282,6 +295,8 @@ Visualization Manager:
                     wrist_2_link:
                       wrist_3_link:
                         ee_link:
+                          2_finger_140_gripper_link:
+                            {}
                           temoto_end_effector:
                             {}
                         tool0:
@@ -313,7 +328,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.1067338
+      Distance: 2.74023223
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
