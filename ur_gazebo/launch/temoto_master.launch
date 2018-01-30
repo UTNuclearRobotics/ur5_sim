@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!-- start Gazebo -->
+  <include file="$(find ur_gazebo)/launch/temoto_ur5.launch" />
+
+  <!-- start MoveIt! -->
+  <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch" >
+    <arg name="sim" default="true"/>
+  </include>
+
+  <!-- start RViz -->
+  <include file="$(find ur5_moveit_config)/launch/moveit_rviz.launch" >
+    <arg name="config" default="true"/>
+  </include>
+
+</launch>
