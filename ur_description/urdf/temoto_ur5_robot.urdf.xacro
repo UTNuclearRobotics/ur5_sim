@@ -23,15 +23,6 @@
   <!-- NRG mods -->
   <!--          -->
 
-  <!-- Temoto frame -->
-  <joint name="ee-temoto" type="fixed" >
-    <origin xyz="0.22 0.0 0.0" rpy="-1.571 0 0"/>   <!-- place temoto_end_effector within the 2-finger gripper -->
-    <parent link="ee_link" />  <!-- end-effector link for UR5 -->
-    <child link="temoto_end_effector" />
-  </joint>
-  <link name="temoto_end_effector" />
-
-
   <!-- Attach right gripper to arm -->
   <joint name="ee-gripper" type="fixed">
     <parent link= "ee_link" />

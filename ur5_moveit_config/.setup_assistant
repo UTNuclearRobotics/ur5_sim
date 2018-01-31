@@ -5,4 +5,6 @@ moveit_setup_assistant_config:
   SRDF:
     relative_path: config/ur5.srdf
   CONFIG:
-    generated_timestamp: 1413877529
+    author_name: Andy Zelenak
+    author_email: andyz@utexas.edu
+    generated_timestamp: 1517431085

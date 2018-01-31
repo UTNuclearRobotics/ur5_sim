@@ -22,7 +22,8 @@
   <!-- -J: set initial joints -->
   <!-- -z: set initial robot height -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot 
-    -z 2.5 
+    -y -0.25
+    -z 0.25 
     -J shoulder_pan_joint 0.0
     -J shoulder_lift_joint -1.0
     -J elbow_joint 1.0
