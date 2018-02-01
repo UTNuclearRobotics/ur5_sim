@@ -13,6 +13,9 @@
     <arg name="gui" value="$(arg gui)"/>
   </include>
 
+  <!-- Publish this camera_link for Gazebo cameras -->
+  <node pkg="tf" type="static_transform_publisher" name="camera_joint" args="0 -2 0 0 0 -1.571 /world /camera_link 10" />
+
   <!-- send robot urdf to param server -->
   <include file="$(find ur_description)/launch/temoto_ur5_upload.launch">
     <arg name="limited" value="$(arg limited)"/>
@@ -22,8 +25,6 @@
   <!-- -J: set initial joints -->
   <!-- -z: set initial robot height -->
   <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot 
-    -y -0.25
-    -z 0.25 
     -J shoulder_pan_joint 0.0
     -J shoulder_lift_joint -1.0
     -J elbow_joint 1.0
