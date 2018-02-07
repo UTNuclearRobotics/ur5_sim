@@ -264,6 +264,8 @@ Visualization Manager:
         2_finger_140_gripper_link:
           Value: false
         All Enabled: false
+        asus_wrist_link:
+          Value: false
         base:
           Value: false
         base_link:
@@ -281,7 +283,7 @@ Visualization Manager:
         shoulder_link:
           Value: false
         spacenav:
-          Value: true
+          Value: false
         temoto_end_effector:
           Value: false
         tool0:
@@ -318,6 +320,8 @@ Visualization Manager:
                           2_finger_140_gripper_link:
                             {}
                           temoto_end_effector:
+                            asus_wrist_link:
+                              {}
                             current_cmd_frame:
                               {}
                         tool0:
@@ -391,25 +395,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.90034842
+      Distance: 3.79545879
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.0761569291
-        Y: 0.289909512
-        Z: 0.801618695
+        X: 0.134356171
+        Y: 0.257396936
+        Z: 0.631348252
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.684796393
+      Pitch: 0.779796124
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.27039814
+      Yaw: 4.88040304
     Saved: ~
 Window Geometry:
   Displays:

@@ -13,8 +13,9 @@
     <arg name="gui" value="$(arg gui)"/>
   </include>
 
-  <!-- Publish this camera_link for Gazebo cameras -->
-  <node pkg="tf" type="static_transform_publisher" name="camera_joint" args="0 -2 0 0 0 -1.571 /world /camera_link 10" />
+  <!-- Publish attachment links for Gazebo cameras -->
+  <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="0 -2 0 0 0 -1.571 /world /camera_link 10" />
+  <node pkg="tf" type="static_transform_publisher" name="asus_wrist_tf" args="-0.1 0 0.03 0 0 0 /temoto_end_effector /asus_wrist_link 10" />
 
   <!-- send robot urdf to param server -->
   <include file="$(find ur_description)/launch/temoto_ur5_upload.launch">

@@ -81,17 +81,17 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='default'>
-      <sim_time>945 846000000</sim_time>
-      <real_time>85 207507463</real_time>
-      <wall_time>1517517145 888205467</wall_time>
-      <iterations>84765</iterations>
-      <model name='asus_xtion_pro_camera'>
-        <pose frame=''>0 -2 0.022961 -0 4.9e-05 1.571</pose>
+      <sim_time>1039 729000000</sim_time>
+      <real_time>94 438720490</real_time>
+      <wall_time>1518017299 441701421</wall_time>
+      <iterations>93883</iterations>
+      <model name='asus_world'>
+        <pose frame=''>0 -2 0.022961 0 1.8e-05 1.571</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0 -2 0.022961 -0 4.9e-05 1.571</pose>
+          <pose frame=''>0 -2 0.022961 0 1.8e-05 1.571</pose>
           <velocity>0 0 0 -1e-06 0 0</velocity>
-          <acceleration>0 0 0 -1e-06 2e-06 -0</acceleration>
+          <acceleration>0 0 0 1e-06 -2e-06 -0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
@@ -106,13 +106,13 @@
         </link>
       </model>
       <model name='drill_0'>
-        <pose frame=''>-0.169846 0.617172 0.437933 -7e-06 -2.7e-05 0.785735</pose>
+        <pose frame=''>-0.169042 0.616954 0.437932 1e-06 1.4e-05 0.764357</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>-0.169846 0.617172 0.437933 -7e-06 -2.7e-05 0.785735</pose>
+          <pose frame=''>-0.169042 0.616954 0.437932 1e-06 1.4e-05 0.764357</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.014622 0.02573 -9.62201 -0.224966 0.117894 -0.064894</acceleration>
-          <wrench>0.02197 0.03866 -14.4573 0 -0 0</wrench>
+          <acceleration>0.265905 -2.99378 1.52793 0.924922 0.95825 -1.60468</acceleration>
+          <wrench>0.399528 -4.49821 2.29575 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -444,8 +444,8 @@
       </link>
       <pose frame=''>-0.175405 1.02026 0 0 -0 0</pose>
     </model>
-    <model name='asus_xtion_pro_camera'>
-      <pose frame=''>0.695613 -0.829766 0.0235 0 -0 0</pose>
+    <model name='asus_world'>
+      <pose frame=''>0.228675 -1.29172 0.0235 0 -0 0</pose>
       <link name='link'>
         <inertial>
           <mass>0.316</mass>
