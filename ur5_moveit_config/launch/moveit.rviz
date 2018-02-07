@@ -4,7 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 274
@@ -370,6 +369,25 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Class: OSVR Plugin for RViz
+      Enabled: false
+      Follow RViz camera: false
+      Fullscreen: true
+      Name: OSVR Plugin for RViz
+      OSVR tf frame: /rviz_plugin_osvr/head
+      Offset:
+        X: -0.600000024
+        Y: 0
+        Z: 0.300000012
+      Publish tf: false
+      Scale:
+        X: 1
+        Y: 1
+        Z: 1
+      Screen name: HDMI-1
+      Target frame: spacenav
+      Use tracker: false
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

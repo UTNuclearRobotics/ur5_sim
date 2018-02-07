@@ -14,4 +14,7 @@
     <arg name="config" default="true"/>
   </include>
 
+  <!-- VR -->
+  <node name="osvr_server" pkg="rviz_plugin_osvr" type="start_osvr_server.sh" />
+
 </launch>
