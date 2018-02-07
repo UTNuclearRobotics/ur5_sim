@@ -82,16 +82,16 @@
     </spherical_coordinates>
     <state world_name='default'>
       <sim_time>1039 729000000</sim_time>
-      <real_time>94 438720490</real_time>
-      <wall_time>1518017299 441701421</wall_time>
-      <iterations>93883</iterations>
-      <model name='asus_world'>
-        <pose frame=''>0 -2 0.022961 0 1.8e-05 1.571</pose>
+      <real_time>0 0</real_time>
+      <wall_time>1518022912 937712072</wall_time>
+      <iterations>0</iterations>
+      <model name='asus_world_0'>
+        <pose frame=''>0 -2 0.02 0 -0 1.571</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0 -2 0.022961 0 1.8e-05 1.571</pose>
-          <velocity>0 0 0 -1e-06 0 0</velocity>
-          <acceleration>0 0 0 1e-06 -2e-06 -0</acceleration>
+          <pose frame=''>0 -2 0.02 0 -0 1.571</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
@@ -111,8 +111,8 @@
         <link name='link'>
           <pose frame=''>-0.169042 0.616954 0.437932 1e-06 1.4e-05 0.764357</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.265905 -2.99378 1.52793 0.924922 0.95825 -1.60468</acceleration>
-          <wrench>0.399528 -4.49821 2.29575 0 -0 0</wrench>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -131,7 +131,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>3.4687 -3.73614 1.10366 0 0.143643 2.26019</pose>
+        <pose frame=''>3.21935 -3.93021 1.16485 0 0.143643 2.26019</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -444,8 +444,8 @@
       </link>
       <pose frame=''>-0.175405 1.02026 0 0 -0 0</pose>
     </model>
-    <model name='asus_world'>
-      <pose frame=''>0.228675 -1.29172 0.0235 0 -0 0</pose>
+    <model name='asus_world_0'>
+      <pose frame=''>0.721064 -0.906914 0.0235 0 -0 0</pose>
       <link name='link'>
         <inertial>
           <mass>0.316</mass>
@@ -517,7 +517,7 @@
             <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
             <depthImageInfoTopicName>/camera/depth/camera_info</depthImageInfoTopicName>
             <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
-            <frameName>camera_link</frameName>
+            <frameName>asus_world_link</frameName>
             <pointCloudCutoff>0.05</pointCloudCutoff>
             <distortionK1>0</distortionK1>
             <distortionK2>0</distortionK2>
