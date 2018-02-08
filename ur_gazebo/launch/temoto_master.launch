@@ -14,7 +14,15 @@
     <arg name="config" default="true"/>
   </include>
 
-  <!-- VR -->
+  <!-- start OSVR plugin in RViz and control it with the gain button -->
+  <node name="griffin_powermate" pkg="griffin_powermate" type="griffin_powermate" output="screen" />
+  <node name="griffin_vr_zoomer" pkg="griffin_vr_zoomer" type="griffin_vr_zoomer" output="screen">
+    <param name="griffin_topic" value="events"/>
+    <param name="griffin_ns" value="/griffin_powermate"/>
+    <param name="rviz_ns" value="/"/>
+  </node>
+
+  <!-- OSVR server -->
   <node name="osvr_server" pkg="rviz_plugin_osvr" type="start_osvr_server.sh" />
 
 </launch>
