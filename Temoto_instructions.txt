@@ -1,0 +1,11 @@
+roslaunch ur_gazebo temoto_master.launch
+
+roslaunch temoto ur5_temoto_sim.launch
+
+
+Keyboard commands:
+
+'L' to pLan
+'E' to Execute
+'J' to Jog when close to the goal
+'S' to Stop jogging
