@@ -86,10 +86,10 @@
       <wall_time>1518022912 937712072</wall_time>
       <iterations>0</iterations>
       <model name='asus_world_0'>
-        <pose frame=''>0 -2 0.02 0 -0 1.571</pose>
+        <pose frame=''>0 -2 1.02 0 -0 1.571</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0 -2 0.02 0 -0 1.571</pose>
+          <pose frame=''>0 -2 1.02 0 -0 1.571</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -447,16 +447,9 @@
     <model name='asus_world_0'>
       <pose frame=''>0.721064 -0.906914 0.0235 0 -0 0</pose>
       <link name='link'>
+        <static>1</static>
         <inertial>
           <mass>0.316</mass>
-          <inertia>
-            <ixx>0.0007765</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>7.25e-05</iyy>
-            <iyz>0</iyz>
-            <izz>0.0007657</izz>
-          </inertia>
         </inertial>
         <collision name='collision'>
           <geometry>
@@ -467,14 +460,10 @@
           <surface>
             <contact>
               <ode>
-                <max_vel>0.1</max_vel>
-                <min_depth>0.001</min_depth>
               </ode>
             </contact>
             <friction>
               <ode>
-                <mu>0.4</mu>
-                <mu2>0.4</mu2>
               </ode>
               <torsional>
                 <ode/>
@@ -533,7 +522,7 @@
         </sensor>
         <self_collide>0</self_collide>
         <kinematic>0</kinematic>
-        <gravity>1</gravity>
+        <gravity>0</gravity>
       </link>
     </model>
   </world>

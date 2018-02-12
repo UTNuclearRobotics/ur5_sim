@@ -14,7 +14,8 @@
   </include>
 
   <!-- Publish attachment links for Gazebo cameras -->
-  <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="0 -2 0 0 0 -1.571 /world /asus_world_link 10" />
+  <!--node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="0 -2 0 0 0 -1.571 /world /asus_world_link 10" /-->
+  <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="0 -2 1 0 0 -1.571 /world /asus_world_link 10" />
 
   <!-- send robot urdf to param server -->
   <include file="$(find ur_description)/launch/temoto_ur5_upload.launch">
