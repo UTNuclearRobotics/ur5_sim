@@ -2,15 +2,16 @@
 <launch>
   
   <!-- start Gazebo -->
-  <include file="$(find ur_gazebo)/launch/temoto_ur5.launch">
+  <!--include file="$(find ur_gazebo)/launch/temoto_ur5.launch">
     <arg name="limited" value="true" />
-  </include>
+  </include-->
 
-  <!--node name="gazebo_starter" pkg="ur_gazebo" type="start_gazebo.sh" output="screen"/-->
+  <!--node name="gazebo_starter" pkg="ur_gazebo" type="gazebo_starter.sh" output="screen"/-->
 
   <!-- start MoveIt! -->
   <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch" >
     <arg name="sim" default="true"/>
+    <arg name="limited" default="true"/>
   </include>
 
   <!-- start RViz -->

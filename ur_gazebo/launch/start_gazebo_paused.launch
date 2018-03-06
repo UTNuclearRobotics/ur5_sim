@@ -11,7 +11,7 @@
   </include>
 
   <!-- Publish attachment links for Gazebo cameras -->
-  <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="0 -2 1 0 0 -1.571 /world /asus_world_link 10" />
+  <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="-1 -2 1.05 -0.524 0 -1.579 /world /asus_world_link 10" />
 
 
   <!-- Robot state publisher -->

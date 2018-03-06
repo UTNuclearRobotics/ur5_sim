@@ -86,13 +86,14 @@
       <wall_time>1518022912 937712072</wall_time>
       <iterations>0</iterations>
       <model name='asus_world_0'>
-        <pose frame=''>0 -2 1.02 0 -0 1.571</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0 -2 1.02 0 -0 1.571</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
+          <!--pose frame=''>0 -2 1.02 0 -0 1.571</pose-->
+          <pose frame=''>0 0 0 0 0 0</pose>
+          <velocity>0 0 0 0 0 0</velocity>
+          <acceleration>0 0 0 0 0 0</acceleration>
+          <wrench>0 0 0 0 0 0</wrench>
         </link>
       </model>
       <model name='bookshelf_0'>
@@ -445,7 +446,7 @@
       <pose frame=''>-0.175405 1.02026 0 0 -0 0</pose>
     </model>
     <model name='asus_world_0'>
-      <pose frame=''>0.721064 -0.906914 0.0235 0 -0 0</pose>
+      <pose frame=''>0 0 0 0 0 0</pose>
       <link name='link'>
         <static>1</static>
         <inertial>
