@@ -34,7 +34,7 @@ joint_positions:
 - 1.0
 - 1.0
 - 1.0
-- 0.14
+- -1.5
 "
 # Adjust the bookshelf
 rosservice call /gazebo/set_model_state "
