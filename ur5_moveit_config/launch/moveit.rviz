@@ -4,10 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
         - /MotionPlanning1/Planning Request1
         - /TF1/Frames1
-        - /OSVR Plugin for RViz1
         - /OSVR Plugin for RViz1/Offset1
       Splitter Ratio: 0.5
     Tree Height: 350
@@ -279,7 +277,7 @@ Visualization Manager:
       Marker Topic: /visualization_marker
       Name: Marker
       Namespaces:
-        hand_pose_marker: true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -332,24 +330,10 @@ Visualization Manager:
       Target frame: vr_cam
       Use tracker: false
       Value: true
-    - Blend angle: 10
-      Class: rviz_textured_sphere/SphereDisplay
-      Enabled: false
-      FOV front: 224
-      FOV rear: 224
-      Front camera image: /front_camera/image_raw
-      Name: SphereDisplay
-      Radius: 5
-      Rear camera image: /rear_camera/image_raw
-      Reference frame: <Fixed Frame>
-      Ring count: 128
-      Segment count: 128
-      Transport Hint: compressed
-      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Default Light: true
+    Default Light: false
     Fixed Frame: base_link
     Frame Rate: 90
   Name: root
@@ -371,7 +355,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.62474203
+      Distance: 3.93285704
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -386,10 +370,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.434795052
+      Pitch: 0.174795136
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.2553997
+      Yaw: 5.2154007
     Saved: ~
 Window Geometry:
   Displays:
