@@ -63,7 +63,7 @@ model_state:
       w: 0.939
 "
 
-# Adjust the realsense camera
+# Adjust the camera
 rosservice call /gazebo/set_link_state "
 link_state:
   link_name: 'asus_world_0::link'
@@ -77,18 +77,18 @@ link_state:
       w: 0.866
 "
 
-sleep 1
-echo "###############   LOAD CONTROLLERS   ###############"
-gnome-terminal -e "roslaunch ur_gazebo load_controllers.launch"
+#sleep 1
+#echo "###############   LOAD CONTROLLERS   ###############"
+#gnome-terminal -e "roslaunch ur_gazebo load_controllers.launch"
 
-sleep 1
-echo "###############   START CONTROLLERS   ###############"
-gnome-terminal -e "roslaunch ur_gazebo start_controllers.launch"
+#sleep 1
+#echo "###############   START CONTROLLERS   ###############"
+#gnome-terminal -e "roslaunch ur_gazebo start_controllers.launch"
 
-sleep 2
-echo "###############   UNPAUSING PHYSICS   ###############"
-rosservice call /gazebo/unpause_physics "{}"
+#sleep 2
+#echo "###############   UNPAUSING PHYSICS   ###############"
+#rosservice call /gazebo/unpause_physics "{}"
 
-sleep 2
-echo "###############   Moveit rviz etc   ###############"
-gnome-terminal -e "roslaunch ur_gazebo temoto_master.launch"
+#sleep 2
+#echo "###############   Moveit rviz etc   ###############"
+#gnome-terminal -e "roslaunch ur_gazebo master.launch"

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- start MoveIt! -->
+  <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch" >
+    <arg name="sim" default="true"/>
+    <arg name="limited" default="true"/>
+  </include>
+
+  <!-- start RViz -->
+  <include file="$(find ur5_moveit_config)/launch/moveit_rviz.launch" >
+    <arg name="config" default="true"/>
+  </include> 
+
+</launch>
