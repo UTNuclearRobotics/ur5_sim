@@ -1,0 +1,3 @@
+[submodule "jog_arm"]
+	path = jog_arm
+	url = https://github.com/UTNuclearRoboticsPublic/jog_arm.git

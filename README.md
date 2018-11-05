@@ -5,6 +5,12 @@ Usage:
 
 ./ur_gazebo/scripts/gazebo_starter.sh
 
+roslaunch ur_gazebo jog_arm.launch
+
+
+Initial setup:
+======
+
 (This is a hack -- Gazebo must be paused initially to set the robot joints. See https://answers.ros.org/question/248178/can-i-set-initial-joint-positions-in-gazebomoveit-via-configuration/ ) 
 
 Copy custom sensor models from ur_gazebo/models/_/_.sdf to ~/.gazebo/models/_/_.sdf
