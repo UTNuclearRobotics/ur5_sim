@@ -92,3 +92,11 @@ rosservice call /gazebo/unpause_physics "{}"
 sleep 2
 echo "###############   Moveit rviz etc   ###############"
 gnome-terminal -e "roslaunch ur_gazebo temoto_master.launch"
+
+sleep 2
+echo "###############   UPDATE CONTROLLER LIBRARIES   ###############"
+gnome-terminal -e "rosservice call /controller_manager/reload_controller_libraries \"force_kill: true\""
+sleep 1
+gnome-terminal -e "roslaunch ur_gazebo load_controllers.launch"
+sleep 1
+gnome-terminal -e "roslaunch ur_gazebo start_controllers.launch"
