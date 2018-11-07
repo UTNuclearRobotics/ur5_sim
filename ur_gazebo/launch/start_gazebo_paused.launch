@@ -14,7 +14,6 @@
   <!-- Publish attachment links for Gazebo cameras -->
   <node pkg="tf" type="static_transform_publisher" name="asus_world_tf" args="-1 -2 1.05 -0.524 0 -1.579 /world /asus_world_link 10" />
 
-
   <!-- Robot state publisher -->
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" respawn="true">
     <param name="publish_frequency" type="double" value="50.0" />
