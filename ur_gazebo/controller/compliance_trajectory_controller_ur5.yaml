@@ -1,5 +1,4 @@
-arm_controller:
-  #type: position_controllers/JointTrajectoryController
+compliance_trajectory_controller:
   type: position_controllers/ComplianceController
   joints:
      - shoulder_pan_joint

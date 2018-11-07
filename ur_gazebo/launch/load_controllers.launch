@@ -2,8 +2,8 @@
 <launch>
 
   <!-- arm controller -->
-  <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur5.yaml" command="load"/>
-  <node name="arm_controller_loader" pkg="controller_manager" type="controller_manager" args="load arm_controller" respawn="false" output="screen"/>
+  <rosparam file="$(find ur_gazebo)/controller/compliance_trajectory_controller_ur5.yaml" command="load"/>
+  <node name="compliance_trajectory_controller_loader" pkg="controller_manager" type="controller_manager" args="load compliance_trajectory_controller" respawn="false" output="screen"/>
 
   <!-- joint_state_controller -->
   <rosparam file="$(find ur_gazebo)/controller/joint_state_controller.yaml" command="load"/>
