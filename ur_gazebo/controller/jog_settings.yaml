@@ -29,5 +29,5 @@ command_out_topic: compliance_controller/velocity_command
 command_out_type: std_msgs/Float64MultiArray
 # Can save some bandwidth as most robots only require positions or velocities
 publish_joint_positions: true
-publish_joint_velocities: true
+publish_joint_velocities: false
 publish_joint_accelerations: false
