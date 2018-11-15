@@ -30,13 +30,3 @@ roslaunch ur_modern_driver ur3_bringup_joint_limited.launch robot_ip:=192.168.1.
 roslaunch ur3_moveit_config ur3_moveit_planning_execution.launch
 
 roslaunch ur3_moveit_config moveit_rviz.launch config:=true
-
-
-Other useful stuff:
-======
-
-rosservice call /controller_manager/switch_controller "start_controllers:
-- 'compliance_controller'
-stop_controllers:
-- 'vel_based_pos_traj_controller'
-strictness: 1"

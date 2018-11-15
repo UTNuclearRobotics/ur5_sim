@@ -6,7 +6,7 @@
 
   <node name="jog_arm_server" pkg="jog_arm" type="jog_arm_server" output="screen" >
     <param name="parameter_ns" type="string" value="jog_arm_server" />
-    <rosparam command="load" file="$(find ur_gazebo)/controller/jog_settings.yaml" />
+    <rosparam command="load" file="$(find ur_gazebo)/controller/ur5_sim_jog_settings.yaml" />
   </node>
 
 </launch>
