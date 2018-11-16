@@ -28,6 +28,6 @@ command_out_topic: compliance_controller/velocity_command
 # or trajectory_msgs/JointTrajectory (for Universal Robots and other non-ros_control robots)
 command_out_type: std_msgs/Float64MultiArray
 # Can save some bandwidth as most robots only require positions or velocities
-publish_joint_positions: true
-publish_joint_velocities: false
+publish_joint_positions: false
+publish_joint_velocities: true
 publish_joint_accelerations: false

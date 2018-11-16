@@ -5,7 +5,7 @@ UR5 Simulation Usage:
 
 ./ur_gazebo/scripts/gazebo_starter.sh
 
-roslaunch ur_gazebo jog_arm.launch
+roslaunch ur_gazebo ur5_sim_jog_arm.launch
 
 
 UR5 Initial simulation setup:
@@ -30,3 +30,5 @@ roslaunch ur_modern_driver ur3_bringup_joint_limited.launch robot_ip:=192.168.1.
 roslaunch ur3_moveit_config ur3_moveit_planning_execution.launch
 
 roslaunch ur3_moveit_config moveit_rviz.launch config:=true
+
+roslaunch ur_gazebo ur3_hw_jog_arm.launch
