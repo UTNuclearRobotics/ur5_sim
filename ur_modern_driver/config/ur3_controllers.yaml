@@ -106,8 +106,8 @@ joint_group_vel_controller:
      - wrist_2_joint
      - wrist_3_joint
 
-traj_or_jog_controller:
-   type: traj_or_jog_controllers/TrajOrJogController
+compliance_controller:
+   type: compliance_controllers/ComplianceController
    joints:
      - shoulder_pan_joint
      - shoulder_lift_joint
