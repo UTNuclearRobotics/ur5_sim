@@ -1,5 +1,5 @@
-compliance_controller:
-  type: compliance_controllers/ComplianceController
+traj_or_jog_controller:
+  type: traj_or_jog_controllers/TrajOrJogController
   joints:
      - shoulder_pan_joint
      - shoulder_lift_joint

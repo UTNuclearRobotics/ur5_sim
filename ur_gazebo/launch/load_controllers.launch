@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!-- compliance_controller -->
-  <rosparam file="$(find ur_gazebo)/controller/compliance_controller_ur5.yaml" command="load"/>
-  <node name="compliance_controller_loader" pkg="controller_manager" type="controller_manager" args="load compliance_controller" respawn="false" output="screen"/>
+  <!-- traj_or_jog_controller -->
+  <rosparam file="$(find ur_gazebo)/controller/traj_or_jog_controller_ur5.yaml" command="load"/>
+  <node name="traj_or_jog_controller_loader" pkg="controller_manager" type="controller_manager" args="load traj_or_jog_controller" respawn="false" output="screen"/>
 
   <!-- joint_state_controller -->
   <rosparam file="$(find ur_gazebo)/controller/joint_state_controller.yaml" command="load"/>
