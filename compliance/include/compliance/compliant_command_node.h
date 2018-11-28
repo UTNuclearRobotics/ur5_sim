@@ -4,6 +4,7 @@
 
 #include <compliance/compliant_control.h>
 #include <ros/ros.h>
+#include <geometry_msgs/WrenchStamped.h>
 #include <std_srvs/SetBool.h>
 
 namespace compliant_command_node
@@ -45,6 +46,12 @@ public:
   {
   	enable_compliance_service_ = n_.advertiseService(
   	  n_.getNamespace() + "toggle_compliance_publication", &PublishComplianceJointVelocities::toggleCompliance, this);
+
+    bias_compliance_service_ = n_.advertiseService(
+      n_.getNamespace() + "bias_compliance_calcs", &PublishComplianceJointVelocities::biasComplianceCalcs, this);
+
+    // TODO: do not hard-code the wrench topic
+    wrench_subscriber_ = n_.subscribe("wrench", 1, &PublishComplianceJointVelocities::wrenchCallback, this);
   }
 
   // Spin and publish compliance velocities, unless disabled by a service call
@@ -53,13 +60,29 @@ public:
 	  while (ros::ok())
 	  {
 	    ros::spinOnce();
+      // TODO: do not hard-code this spin rate
 	    ros::Duration(0.01).sleep();
 
 	    if (compliance_enabled_)
-	      ;// update the compliance calculations, and publish them
+      {
+        // The algorithm:
+        // Get a wrench in the force/torque sensor frame
+        // With the compliance object, calculate a compliant, Cartesian velocity in the force/torque sensor frame
+        // Transform this Cartesian velocity to the MoveIt! planning frame
+        // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
+        // Publish this joint velocity vector
+        // Another node can sum it with nominal joint velocities to result in spring-like motion
+
+        // Input to the compliance calculation is an all-zero nominal velocity
+        std::vector<double> velocity(6);
+        compliant_control_instance_.getVelocity(velocity, last_wrench_data_, velocity);
+
+        // Transform this Cartesian velocity to the MoveIt! planning frame
+
+        ROS_INFO_STREAM(velocity.at(0));
+      }
 	  }
   }
-
 
 private:
   // A service callback. Toggles compliance publication on/off
@@ -69,6 +92,30 @@ private:
     compliance_enabled_ = req.data;
     res.success = true;
     return true;
+  }
+
+  // A service callback. Biases (aka tares, aka zeroes) the compliance calculations
+  // based on the most-recently-received wrench
+  bool biasComplianceCalcs(std_srvs::SetBool::Request &req,
+    std_srvs::SetBool::Response &res)
+  {
+    if (req.data)
+    {
+      compliant_control_instance_.biasSensor(last_wrench_data_);
+      ROS_INFO_STREAM("The bias of compliance calculations was reset.");
+      res.success = true;
+    }
+    else
+      res.success = false;
+
+    return true;
+  }
+
+  // Callback for wrench data
+  void wrenchCallback(const geometry_msgs::WrenchStamped::ConstPtr& msg)
+  {
+    last_wrench_data_ = *msg;
+    last_wrench_data_.header.frame_id = force_torque_frame_name_;
   }
 
   ros::NodeHandle n_;
@@ -82,7 +129,16 @@ private:
   static DefaultComplianceParameters compliance_params_;
 
   // Publish compliance commands unless interrupted by a service call
-  ros::ServiceServer enable_compliance_service_;
+  ros::ServiceServer enable_compliance_service_, bias_compliance_service_;
+
+  // Subscribe to wrench data from a force/torque sensor
+  ros::Subscriber wrench_subscriber_;
+
+  // TODO: do not hard-code these frame names
+  std::string force_torque_frame_name_ = "ft_frame";
+  std::string moveit_planning_frame_name_ = "moveit_frame";
+
+  geometry_msgs::WrenchStamped last_wrench_data_;
 };
 
 } // namespace compliant_command_node
