@@ -25,18 +25,20 @@ struct DefaultComplianceParameters
   geometry_msgs::WrenchStamped force_torque_data;
   // Outgoing velocity msg
   std::vector<double> velocity_out{0, 0, 0, 0, 0, 0};
+  // Assume a bias wrench of all zeros
+  geometry_msgs::WrenchStamped bias;
 };
 
 class PublishComplianceJointVelocities
 {
 public:
-  PublishComplianceJointVelocities(geometry_msgs::WrenchStamped &bias) :
+  PublishComplianceJointVelocities() :
     compliant_control_instance_(
       compliance_params_.stiffness,
       compliance_params_.deadband,
       compliance_params_.end_condition_wrench,
       compliance_params_.filter_param,
-      bias,
+      compliance_params_.bias,
       compliance_params_.highest_allowable_force,
       compliance_params_.highest_allowable_torque
     )
@@ -53,8 +55,8 @@ public:
 	    ros::spinOnce();
 	    ros::Duration(0.01).sleep();
 
-	    //if (compliance_enabled_)
-	      // update the compliance calculations, and publish them
+	    if (compliance_enabled_)
+	      ;// update the compliance calculations, and publish them
 	  }
   }
 
@@ -64,6 +66,7 @@ private:
   bool toggleCompliance(std_srvs::SetBool::Request &req,
     std_srvs::SetBool::Response &res)
   {
+    compliance_enabled_ = req.data;
     res.success = true;
     return true;
   }
@@ -74,7 +77,7 @@ private:
   // Key equation: compliance_velocity[i] = wrench[i]/stiffness[i]
   compliant_control::CompliantControl compliant_control_instance_;
 
-  bool compliance_enabled = true;
+  bool compliance_enabled_ = true;
 
   static DefaultComplianceParameters compliance_params_;
 

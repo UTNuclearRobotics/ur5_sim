@@ -8,11 +8,8 @@ compliant_command_node::DefaultComplianceParameters compliant_command_node::Publ
 int main(int argc, char** argv) {
   ros::init(argc, argv, "compliant_command_node");
 
-  // A wrench is needed to bias the compliance calculations.
-  geometry_msgs::WrenchStamped bias;
-
   // Do compliance calculations in this class
-  compliant_command_node::PublishComplianceJointVelocities publish_compliance_velocities(bias);
+  compliant_command_node::PublishComplianceJointVelocities publish_compliance_velocities;
 
   // Spin and publish compliance velocities, unless disabled by a service call
   publish_compliance_velocities.spin();
