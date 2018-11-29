@@ -6,6 +6,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/WrenchStamped.h>
 #include <std_srvs/SetBool.h>
+#include <tf2_ros/transform_listener.h>
 
 namespace compliant_command_node
 {
@@ -42,7 +43,8 @@ public:
       compliance_params_.bias,
       compliance_params_.highest_allowable_force,
       compliance_params_.highest_allowable_torque
-    )
+    ),
+    tf_listener_(tf_buffer_)
   {
   	enable_compliance_service_ = n_.advertiseService(
   	  n_.getNamespace() + "toggle_compliance_publication", &PublishComplianceJointVelocities::toggleCompliance, this);
@@ -55,34 +57,7 @@ public:
   }
 
   // Spin and publish compliance velocities, unless disabled by a service call
-  void spin()
-  {
-	  while (ros::ok())
-	  {
-	    ros::spinOnce();
-      // TODO: do not hard-code this spin rate
-	    ros::Duration(0.01).sleep();
-
-	    if (compliance_enabled_)
-      {
-        // The algorithm:
-        // Get a wrench in the force/torque sensor frame
-        // With the compliance object, calculate a compliant, Cartesian velocity in the force/torque sensor frame
-        // Transform this Cartesian velocity to the MoveIt! planning frame
-        // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
-        // Publish this joint velocity vector
-        // Another node can sum it with nominal joint velocities to result in spring-like motion
-
-        // Input to the compliance calculation is an all-zero nominal velocity
-        std::vector<double> velocity(6);
-        compliant_control_instance_.getVelocity(velocity, last_wrench_data_, velocity);
-
-        // Transform this Cartesian velocity to the MoveIt! planning frame
-
-        ROS_INFO_STREAM(velocity.at(0));
-      }
-	  }
-  }
+  void spin();
 
 private:
   // A service callback. Toggles compliance publication on/off
@@ -134,6 +109,8 @@ private:
   // Subscribe to wrench data from a force/torque sensor
   ros::Subscriber wrench_subscriber_;
 
+  tf2_ros::Buffer tf_buffer_;
+  tf2_ros::TransformListener tf_listener_;
   // TODO: do not hard-code these frame names
   std::string force_torque_frame_name_ = "ft_frame";
   std::string moveit_planning_frame_name_ = "moveit_frame";
