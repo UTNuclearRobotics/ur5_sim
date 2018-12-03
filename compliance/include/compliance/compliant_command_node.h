@@ -3,9 +3,12 @@
 #define COMPLIANT_COMMAND_NODE_H
 
 #include <compliance/compliant_control.h>
-#include <ros/ros.h>
+#include <Eigen/Core>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <geometry_msgs/WrenchStamped.h>
+#include <moveit/robot_model_loader/robot_model_loader.h>
+#include <moveit/robot_state/robot_state.h>
+#include <ros/ros.h>
 #include <std_srvs/SetBool.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_listener.h>
@@ -56,6 +59,12 @@ public:
 
     // TODO: do not hard-code the wrench topic
     wrench_subscriber_ = n_.subscribe("wrench", 1, &PublishComplianceJointVelocities::wrenchCallback, this);
+
+    std::unique_ptr<robot_model_loader::RobotModelLoader> model_loader_ptr_ = std::unique_ptr<robot_model_loader::RobotModelLoader>(new robot_model_loader::RobotModelLoader);
+    const robot_model::RobotModelPtr& kinematic_model = model_loader_ptr_->getModel();
+    // TODO: do not hard-code MoveGroup name
+    joint_model_group_ = kinematic_model->getJointModelGroup("manipulator");
+    kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
   }
 
   // Spin and publish compliance velocities, unless disabled by a service call
@@ -116,6 +125,10 @@ private:
   // TODO: do not hard-code these frame names
   std::string force_torque_frame_name_ = "base";
   std::string moveit_planning_frame_name_ = "base_link";
+
+  // MoveIt! setup, required to retrieve the Jacobian
+  const robot_state::JointModelGroup* joint_model_group_;
+  robot_state::RobotStatePtr kinematic_state_;
 
   geometry_msgs::WrenchStamped last_wrench_data_;
 };

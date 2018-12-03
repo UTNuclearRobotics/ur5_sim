@@ -53,6 +53,7 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
       rotational_velocity.vector.z = velocity[5];      
 
       // Transform this Cartesian velocity to the MoveIt! planning frame
+      // TODO: get the MoveIt! planning frame programmatically
       geometry_msgs::TransformStamped force_torque_to_moveit_tf;
       while (force_torque_to_moveit_tf.header.frame_id == "" && ros::ok())
       {
@@ -74,9 +75,18 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
       tf2::doTransform(translational_velocity, translational_velocity, force_torque_to_moveit_tf);
       tf2::doTransform(rotational_velocity, rotational_velocity, force_torque_to_moveit_tf);
 
-      ROS_INFO_STREAM( translational_velocity );
+      Eigen::VectorXd cartesian_velocity(6);
+      cartesian_velocity[0] = translational_velocity.vector.x;
+      cartesian_velocity[1] = translational_velocity.vector.y;
+      cartesian_velocity[2] = translational_velocity.vector.z;
+      cartesian_velocity[3] = rotational_velocity.vector.x;
+      cartesian_velocity[4] = rotational_velocity.vector.y;
+      cartesian_velocity[5] = rotational_velocity.vector.z;
 
       // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
+      Eigen::MatrixXd j = kinematic_state_->getJacobian(joint_model_group_);
+      Eigen::VectorXd delta_theta = j.transpose() * (j * j.transpose()).inverse() * cartesian_velocity;
+      ROS_INFO_STREAM(delta_theta);
 
       // Publish this joint velocity vector
       // Type is std_msgs/Float64MultiArray.h
