@@ -4,8 +4,10 @@
 
 #include <compliance/compliant_control.h>
 #include <ros/ros.h>
+#include <geometry_msgs/Vector3Stamped.h>
 #include <geometry_msgs/WrenchStamped.h>
 #include <std_srvs/SetBool.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_listener.h>
 
 namespace compliant_command_node
@@ -112,8 +114,8 @@ private:
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener tf_listener_;
   // TODO: do not hard-code these frame names
-  std::string force_torque_frame_name_ = "ft_frame";
-  std::string moveit_planning_frame_name_ = "moveit_frame";
+  std::string force_torque_frame_name_ = "base";
+  std::string moveit_planning_frame_name_ = "base_link";
 
   geometry_msgs::WrenchStamped last_wrench_data_;
 };

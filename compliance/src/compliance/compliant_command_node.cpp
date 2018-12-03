@@ -40,27 +40,46 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
       // Calculate the compliant velocity adjustment
       compliant_control_instance_.getVelocity(velocity, last_wrench_data_, velocity);
 
+      geometry_msgs::Vector3Stamped translational_velocity;
+      translational_velocity.header.frame_id = force_torque_frame_name_;
+      translational_velocity.vector.x = velocity[0];
+      translational_velocity.vector.y = velocity[1];
+      translational_velocity.vector.z = velocity[2];
+
+      geometry_msgs::Vector3Stamped rotational_velocity;
+      rotational_velocity.header.frame_id = force_torque_frame_name_;
+      rotational_velocity.vector.x = velocity[3];
+      rotational_velocity.vector.y = velocity[4];
+      rotational_velocity.vector.z = velocity[5];      
+
       // Transform this Cartesian velocity to the MoveIt! planning frame
       geometry_msgs::TransformStamped force_torque_to_moveit_tf;
       while (force_torque_to_moveit_tf.header.frame_id == "" && ros::ok())
       {
-        try{
-          force_torque_to_moveit_tf = tf_buffer_.lookupTransform(force_torque_frame_name_, moveit_planning_frame_name_,
-                                   ros::Time(0));
+        try
+        {
+          force_torque_to_moveit_tf = tf_buffer_.lookupTransform(
+            moveit_planning_frame_name_,
+            force_torque_frame_name_,
+            ros::Time(0));
         }
-        catch (tf2::TransformException &ex) {
+        catch (tf2::TransformException &ex)
+        {
           ROS_WARN("%s",ex.what());
           ROS_WARN("Waiting for the transform from force/torque to moveit_planning_frame to be published.");
           ros::Duration(0.01).sleep();
           continue;
         }
       }
+      tf2::doTransform(translational_velocity, translational_velocity, force_torque_to_moveit_tf);
+      tf2::doTransform(rotational_velocity, rotational_velocity, force_torque_to_moveit_tf);
+
+      ROS_INFO_STREAM( translational_velocity );
 
       // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
 
       // Publish this joint velocity vector
-
-      ROS_INFO_STREAM(velocity.at(0));
+      // Type is std_msgs/Float64MultiArray.h
     }
   }
 }

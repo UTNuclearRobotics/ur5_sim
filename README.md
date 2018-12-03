@@ -32,3 +32,9 @@ roslaunch ur3_moveit_config ur3_moveit_planning_execution.launch
 roslaunch ur3_moveit_config moveit_rviz.launch config:=true
 
 roslaunch ur_gazebo ur3_hw_jog_arm.launch
+
+
+Compliance usage:
+======
+rosrun compliance compliant_command_node  (to publish std_msgs/Float64Array velocities on the /compliance_controller/compliance_velocity_adjustment topic)
+rosrun compliace_command_publisher compliance_command_publisher  (to publish really simple test data to /compliance_controller/compliance_velocity_adjustment)
