@@ -6,9 +6,11 @@
 #include <Eigen/Core>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <geometry_msgs/WrenchStamped.h>
+#include <math.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/robot_state.h>
 #include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <std_srvs/SetBool.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
@@ -17,9 +19,12 @@
 namespace compliant_command_node
 {
 
-struct DefaultComplianceParameters
+struct DefaultCompliantParameters
 {
-  std::vector<double> stiffness{4000, 4000, 4000, 4000, 4000, 4000};
+  // Key equation:
+  // compliance_velocity[i] = wrench[i]/stiffness[i]
+
+  std::vector<double> stiffness{20000, 20000, 20000, 8000, 8000, 8000};
   // Related to the cutoff frequency of the low-pass filter.
   double filter_param = 10.;
   // Deadband for force/torque measurements
@@ -37,10 +42,10 @@ struct DefaultComplianceParameters
   geometry_msgs::WrenchStamped bias;
 };
 
-class PublishComplianceJointVelocities
+class PublishCompliantJointVelocities
 {
 public:
-  PublishComplianceJointVelocities() :
+  PublishCompliantJointVelocities() :
     compliant_control_instance_(
       compliance_params_.stiffness,
       compliance_params_.deadband,
@@ -53,13 +58,13 @@ public:
     tf_listener_(tf_buffer_)
   {
   	enable_compliance_service_ = n_.advertiseService(
-  	  n_.getNamespace() + "toggle_compliance_publication", &PublishComplianceJointVelocities::toggleCompliance, this);
+  	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliant, this);
 
     bias_compliance_service_ = n_.advertiseService(
-      n_.getNamespace() + "bias_compliance_calcs", &PublishComplianceJointVelocities::biasComplianceCalcs, this);
+      n_.getNamespace() + "bias_compliance_calcs", &PublishCompliantJointVelocities::biasCompliantCalcs, this);
 
     // TODO: do not hard-code the wrench topic
-    wrench_subscriber_ = n_.subscribe("wrench", 1, &PublishComplianceJointVelocities::wrenchCallback, this);
+    wrench_subscriber_ = n_.subscribe("wrench", 1, &PublishCompliantJointVelocities::wrenchCallback, this);
 
     std::unique_ptr<robot_model_loader::RobotModelLoader> model_loader_ptr_ = std::unique_ptr<robot_model_loader::RobotModelLoader>(new robot_model_loader::RobotModelLoader);
     const robot_model::RobotModelPtr& kinematic_model = model_loader_ptr_->getModel();
@@ -68,6 +73,8 @@ public:
     kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
 
     compliant_velocity_pub_ = n_.advertise<std_msgs::Float64MultiArray>("/compliance_controller/compliance_velocity_adjustment", 1);
+
+    joints_sub_ = n_.subscribe("joint_states", 1, &PublishCompliantJointVelocities::jointsCallback, this);
   }
 
   // Spin and publish compliance velocities, unless disabled by a service call
@@ -75,7 +82,7 @@ public:
 
 private:
   // A service callback. Toggles compliance publication on/off
-  bool toggleCompliance(std_srvs::SetBool::Request &req,
+  bool toggleCompliant(std_srvs::SetBool::Request &req,
     std_srvs::SetBool::Response &res)
   {
     compliance_enabled_ = req.data;
@@ -85,7 +92,7 @@ private:
 
   // A service callback. Biases (aka tares, aka zeroes) the compliance calculations
   // based on the most-recently-received wrench
-  bool biasComplianceCalcs(std_srvs::SetBool::Request &req,
+  bool biasCompliantCalcs(std_srvs::SetBool::Request &req,
     std_srvs::SetBool::Response &res)
   {
     if (req.data)
@@ -107,6 +114,12 @@ private:
     last_wrench_data_.header.frame_id = force_torque_frame_name_;
   }
 
+  // Callback for robot state updates
+  void jointsCallback(const sensor_msgs::JointState::ConstPtr& msg)
+  {
+    kinematic_state_->setVariableValues(*msg);
+  }
+
   ros::NodeHandle n_;
 
   // An object to do compliance calculations.
@@ -115,7 +128,7 @@ private:
 
   bool compliance_enabled_ = true;
 
-  static DefaultComplianceParameters compliance_params_;
+  static DefaultCompliantParameters compliance_params_;
 
   // Publish compliance commands unless interrupted by a service call
   ros::ServiceServer enable_compliance_service_, bias_compliance_service_;
@@ -127,7 +140,7 @@ private:
   tf2_ros::TransformListener tf_listener_;
   // TODO: do not hard-code these frame names
   std::string force_torque_frame_name_ = "base";
-  std::string moveit_planning_frame_name_ = "base_link";
+  std::string jacobian_frame_name_ = "ee_link";
 
   // MoveIt! setup, required to retrieve the Jacobian
   const robot_state::JointModelGroup* joint_model_group_;
@@ -136,6 +149,8 @@ private:
   geometry_msgs::WrenchStamped last_wrench_data_;
 
   ros::Publisher compliant_velocity_pub_;
+
+  ros::Subscriber joints_sub_;
 };
 
 } // namespace compliant_command_node

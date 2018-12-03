@@ -2,14 +2,14 @@
 
 #include <compliance/compliant_command_node.h>
 
-// Initialize static member of class PublishComplianceJointVelocities
-compliant_command_node::DefaultComplianceParameters compliant_command_node::PublishComplianceJointVelocities::compliance_params_;
+// Initialize static member of class PublishCompliantJointVelocities
+compliant_command_node::DefaultCompliantParameters compliant_command_node::PublishCompliantJointVelocities::compliance_params_;
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "compliant_command_node");
 
   // Do compliance calculations in this class
-  compliant_command_node::PublishComplianceJointVelocities publish_compliance_velocities;
+  compliant_command_node::PublishCompliantJointVelocities publish_compliance_velocities;
 
   // Spin and publish compliance velocities, unless disabled by a service call
   publish_compliance_velocities.spin();
@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
   return 0;
 }
 
-void compliant_command_node::PublishComplianceJointVelocities::spin()
+void compliant_command_node::PublishCompliantJointVelocities::spin()
 {
   while (ros::ok())
   {
@@ -60,7 +60,7 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
         try
         {
           force_torque_to_moveit_tf = tf_buffer_.lookupTransform(
-            moveit_planning_frame_name_,
+            jacobian_frame_name_,
             force_torque_frame_name_,
             ros::Time(0));
         }
@@ -76,18 +76,45 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
       tf2::doTransform(rotational_velocity, rotational_velocity, force_torque_to_moveit_tf);
 
       Eigen::VectorXd cartesian_velocity(6);
+/*
       cartesian_velocity[0] = translational_velocity.vector.x;
       cartesian_velocity[1] = translational_velocity.vector.y;
       cartesian_velocity[2] = translational_velocity.vector.z;
       cartesian_velocity[3] = rotational_velocity.vector.x;
       cartesian_velocity[4] = rotational_velocity.vector.y;
       cartesian_velocity[5] = rotational_velocity.vector.z;
+*/
+      cartesian_velocity[0] = 0;
+      cartesian_velocity[1] = 0.005;
+      cartesian_velocity[2] = 0;
+      cartesian_velocity[3] = 0;
+      cartesian_velocity[4] = 0;
+      cartesian_velocity[5] = 0;
 
       // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
+      // This Jacobian is w.r.t. to the last link
       Eigen::MatrixXd j = kinematic_state_->getJacobian(joint_model_group_);
       // J^T* (J*(J^T)^-1) is the Moore-Penrose pseudo-inverse
-      Eigen::VectorXd delta_theta = j.transpose() * (j * j.transpose()).inverse() * cartesian_velocity;
-      ROS_WARN_STREAM(delta_theta);
+      // TODO: check for singularity
+      // TODO: use a pseudo-inverse
+      Eigen::VectorXd delta_theta = (j.transpose() * (j * j.transpose()).inverse()) * cartesian_velocity;
+      ROS_INFO_STREAM(delta_theta);
+
+      // Check if a command magnitude would be too large.
+      // TODO: do not hard-code this threshold
+      double largest_allowable_command = 0.06;
+      for (int i=0; i<delta_theta.size(); ++i)
+      {
+        if ( (fabs(delta_theta[i]) > largest_allowable_command) || std::isnan(delta_theta[i]) )
+        {
+          ROS_WARN_STREAM("Magnitude of compliant command is too large. Pausing compliant commands.");
+          for (int j=0; j<delta_theta.size(); ++j)
+          {
+            delta_theta[j] = 0.;
+          }
+          break;
+        }
+      }
 
       // Publish this joint velocity vector
       // Type is std_msgs/Float64MultiArray.h
