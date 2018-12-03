@@ -9,6 +9,7 @@
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/robot_state.h>
 #include <ros/ros.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <std_srvs/SetBool.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/transform_listener.h>
@@ -65,6 +66,8 @@ public:
     // TODO: do not hard-code MoveGroup name
     joint_model_group_ = kinematic_model->getJointModelGroup("manipulator");
     kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
+
+    compliant_velocity_pub_ = n_.advertise<std_msgs::Float64MultiArray>("/compliance_controller/compliance_velocity_adjustment", 1);
   }
 
   // Spin and publish compliance velocities, unless disabled by a service call
@@ -131,6 +134,8 @@ private:
   robot_state::RobotStatePtr kinematic_state_;
 
   geometry_msgs::WrenchStamped last_wrench_data_;
+
+  ros::Publisher compliant_velocity_pub_;
 };
 
 } // namespace compliant_command_node

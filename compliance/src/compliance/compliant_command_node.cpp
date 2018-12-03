@@ -85,11 +85,18 @@ void compliant_command_node::PublishComplianceJointVelocities::spin()
 
       // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
       Eigen::MatrixXd j = kinematic_state_->getJacobian(joint_model_group_);
+      // J^T* (J*(J^T)^-1) is the Moore-Penrose pseudo-inverse
       Eigen::VectorXd delta_theta = j.transpose() * (j * j.transpose()).inverse() * cartesian_velocity;
-      ROS_INFO_STREAM(delta_theta);
+      ROS_WARN_STREAM(delta_theta);
 
       // Publish this joint velocity vector
       // Type is std_msgs/Float64MultiArray.h
+      std_msgs::Float64MultiArray delta_theta_msg;
+      for (int i=0; i<delta_theta.size(); ++i)
+      {
+        delta_theta_msg.data.push_back( delta_theta[i] );
+      }
+      compliant_velocity_pub_.publish(delta_theta_msg);
     }
   }
 }
