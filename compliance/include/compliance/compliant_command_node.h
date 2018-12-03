@@ -24,7 +24,9 @@ struct DefaultCompliantParameters
   // Key equation:
   // compliance_velocity[i] = wrench[i]/stiffness[i]
 
-  std::vector<double> stiffness{20000, 20000, 20000, 8000, 8000, 8000};
+  // TODO: read these from parameters
+
+  std::vector<double> stiffness{4000, 4000, 4000, 300, 300, 300};
   // Related to the cutoff frequency of the low-pass filter.
   double filter_param = 10.;
   // Deadband for force/torque measurements
@@ -140,7 +142,7 @@ private:
   tf2_ros::TransformListener tf_listener_;
   // TODO: do not hard-code these frame names
   std::string force_torque_frame_name_ = "base";
-  std::string jacobian_frame_name_ = "ee_link";
+  std::string jacobian_frame_name_ = "base_link";
 
   // MoveIt! setup, required to retrieve the Jacobian
   const robot_state::JointModelGroup* joint_model_group_;

@@ -76,20 +76,13 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       tf2::doTransform(rotational_velocity, rotational_velocity, force_torque_to_moveit_tf);
 
       Eigen::VectorXd cartesian_velocity(6);
-/*
+
       cartesian_velocity[0] = translational_velocity.vector.x;
       cartesian_velocity[1] = translational_velocity.vector.y;
       cartesian_velocity[2] = translational_velocity.vector.z;
       cartesian_velocity[3] = rotational_velocity.vector.x;
       cartesian_velocity[4] = rotational_velocity.vector.y;
       cartesian_velocity[5] = rotational_velocity.vector.z;
-*/
-      cartesian_velocity[0] = 0;
-      cartesian_velocity[1] = 0.005;
-      cartesian_velocity[2] = 0;
-      cartesian_velocity[3] = 0;
-      cartesian_velocity[4] = 0;
-      cartesian_velocity[5] = 0;
 
       // Multiply by the Jacobian pseudo-inverse to calculate a joint velocity vector
       // This Jacobian is w.r.t. to the last link
@@ -98,7 +91,6 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       // TODO: check for singularity
       // TODO: use a pseudo-inverse
       Eigen::VectorXd delta_theta = (j.transpose() * (j * j.transpose()).inverse()) * cartesian_velocity;
-      ROS_INFO_STREAM(delta_theta);
 
       // Check if a command magnitude would be too large.
       // TODO: do not hard-code this threshold
