@@ -10,6 +10,7 @@
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/robot_state/robot_state.h>
 #include <ros/ros.h>
+#include <rosparam_shortcuts/rosparam_shortcuts.h>
 #include <sensor_msgs/JointState.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <std_srvs/SetBool.h>
@@ -19,59 +20,49 @@
 namespace compliant_command_node
 {
 
-struct DefaultCompliantParameters
+struct ROSParameters
 {
-  // Key equation:
-  // compliance_velocity[i] = wrench[i]/stiffness[i]
-
-  // TODO: read these from parameters
-
-  std::vector<double> stiffness{4000, 4000, 4000, 300, 300, 300};
-  // Related to the cutoff frequency of the low-pass filter.
-  double filter_param = 10.;
-  // Deadband for force/torque measurements
-  std::vector<double> deadband{10, 10, 10, 10, 10, 10};
-  // Stop when force exceeds X N or torque exceeds X Nm in any dimension.
-  // The robot controller's built-in safety limits are ~90 N, ? Nm
-  std::vector<double> end_condition_wrench{80, 80, 80, 60, 60, 60};
-  // Highest allowable force/torque across all dimensions.
-  double highest_allowable_force = 88, highest_allowable_torque = 50;
-  // Current force/torque data
-  geometry_msgs::WrenchStamped force_torque_data;
-  // Outgoing velocity msg
-  std::vector<double> velocity_out{0, 0, 0, 0, 0, 0};
-  // Assume a bias wrench of all zeros
-  geometry_msgs::WrenchStamped bias;
+  double spin_rate, max_allowable_cmd_magnitude, low_pass_filter_param, highest_allowable_force, highest_allowable_torque;
+  std::string jacobian_frame_name, force_torque_frame_name, force_torque_topic, move_group_name;
+  std::vector<double> stiffness, deadband, end_condition_wrench;
 };
 
 class PublishCompliantJointVelocities
 {
 public:
   PublishCompliantJointVelocities() :
-    compliant_control_instance_(
-      compliance_params_.stiffness,
-      compliance_params_.deadband,
-      compliance_params_.end_condition_wrench,
-      compliance_params_.filter_param,
-      compliance_params_.bias,
-      compliance_params_.highest_allowable_force,
-      compliance_params_.highest_allowable_torque
-    ),
     tf_listener_(tf_buffer_)
   {
+    readROSParameters();
+
+    // Initialize the compliance object
+    std::vector<double> stiffness = {
+    };
+
+  // Initialize an object of the compliance library
+  // Assume a bias wrench of all zeros
+  geometry_msgs::WrenchStamped bias;
+  compliant_control_ptr_ = std::make_shared<compliant_control::CompliantControl>(
+    compliance_params_.stiffness,
+    compliance_params_.deadband,
+    compliance_params_.end_condition_wrench,
+    compliance_params_.low_pass_filter_param,
+    bias,
+    compliance_params_.highest_allowable_force,
+    compliance_params_.highest_allowable_torque    
+    );
+
   	enable_compliance_service_ = n_.advertiseService(
-  	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliant, this);
+  	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliance, this);
 
     bias_compliance_service_ = n_.advertiseService(
       n_.getNamespace() + "bias_compliance_calcs", &PublishCompliantJointVelocities::biasCompliantCalcs, this);
 
-    // TODO: do not hard-code the wrench topic
-    wrench_subscriber_ = n_.subscribe("wrench", 1, &PublishCompliantJointVelocities::wrenchCallback, this);
+    wrench_subscriber_ = n_.subscribe(compliance_params_.force_torque_topic, 1, &PublishCompliantJointVelocities::wrenchCallback, this);
 
     std::unique_ptr<robot_model_loader::RobotModelLoader> model_loader_ptr_ = std::unique_ptr<robot_model_loader::RobotModelLoader>(new robot_model_loader::RobotModelLoader);
     const robot_model::RobotModelPtr& kinematic_model = model_loader_ptr_->getModel();
-    // TODO: do not hard-code MoveGroup name
-    joint_model_group_ = kinematic_model->getJointModelGroup("manipulator");
+    joint_model_group_ = kinematic_model->getJointModelGroup(compliance_params_.move_group_name);
     kinematic_state_ = std::make_shared<robot_state::RobotState>(kinematic_model);
 
     compliant_velocity_pub_ = n_.advertise<std_msgs::Float64MultiArray>("/compliance_controller/compliance_velocity_adjustment", 1);
@@ -84,7 +75,7 @@ public:
 
 private:
   // A service callback. Toggles compliance publication on/off
-  bool toggleCompliant(std_srvs::SetBool::Request &req,
+  bool toggleCompliance(std_srvs::SetBool::Request &req,
     std_srvs::SetBool::Response &res)
   {
     compliance_enabled_ = req.data;
@@ -99,7 +90,7 @@ private:
   {
     if (req.data)
     {
-      compliant_control_instance_.biasSensor(last_wrench_data_);
+      compliant_control_ptr_->biasSensor(last_wrench_data_);
       ROS_INFO_STREAM("The bias of compliance calculations was reset.");
       res.success = true;
     }
@@ -122,15 +113,18 @@ private:
     kinematic_state_->setVariableValues(*msg);
   }
 
+  void readROSParameters();
+
   ros::NodeHandle n_;
 
   // An object to do compliance calculations.
   // Key equation: compliance_velocity[i] = wrench[i]/stiffness[i]
-  compliant_control::CompliantControl compliant_control_instance_;
+  std::shared_ptr<compliant_control::CompliantControl> compliant_control_ptr_;
+
 
   bool compliance_enabled_ = true;
 
-  static DefaultCompliantParameters compliance_params_;
+  static ROSParameters compliance_params_;
 
   // Publish compliance commands unless interrupted by a service call
   ros::ServiceServer enable_compliance_service_, bias_compliance_service_;

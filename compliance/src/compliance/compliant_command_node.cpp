@@ -3,10 +3,12 @@
 #include <compliance/compliant_command_node.h>
 
 // Initialize static member of class PublishCompliantJointVelocities
-compliant_command_node::DefaultCompliantParameters compliant_command_node::PublishCompliantJointVelocities::compliance_params_;
+compliant_command_node::ROSParameters compliant_command_node::PublishCompliantJointVelocities::compliance_params_;
+
+static const char* const NODE_NAME = "compliant_command_node";
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "compliant_command_node");
+  ros::init(argc, argv, NODE_NAME);
 
   // Do compliance calculations in this class
   compliant_command_node::PublishCompliantJointVelocities publish_compliance_velocities;
@@ -38,7 +40,7 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       // Input to the compliance calculation is an all-zero nominal velocity
       std::vector<double> velocity(6);
       // Calculate the compliant velocity adjustment
-      compliant_control_instance_.getVelocity(velocity, last_wrench_data_, velocity);
+      compliant_control_ptr_->getVelocity(velocity, last_wrench_data_, velocity);
 
       geometry_msgs::Vector3Stamped translational_velocity;
       translational_velocity.header.frame_id = force_torque_frame_name_;
@@ -66,8 +68,8 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
         }
         catch (tf2::TransformException &ex)
         {
-          ROS_WARN("%s",ex.what());
-          ROS_WARN("Waiting for the transform from force/torque to moveit_planning_frame to be published.");
+          ROS_WARN_NAMED(NODE_NAME, "%s",ex.what());
+          ROS_WARN_NAMED(NODE_NAME, "Waiting for the transform from force/torque to moveit_planning_frame to be published.");
           ros::Duration(0.01).sleep();
           continue;
         }
@@ -89,7 +91,6 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       Eigen::MatrixXd j = kinematic_state_->getJacobian(joint_model_group_);
       // J^T* (J*(J^T)^-1) is the Moore-Penrose pseudo-inverse
       // TODO: check for singularity
-      // TODO: use a pseudo-inverse
       Eigen::VectorXd delta_theta = (j.transpose() * (j * j.transpose()).inverse()) * cartesian_velocity;
 
       // Check if a command magnitude would be too large.
@@ -99,7 +100,7 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       {
         if ( (fabs(delta_theta[i]) > largest_allowable_command) || std::isnan(delta_theta[i]) )
         {
-          ROS_WARN_STREAM("Magnitude of compliant command is too large. Pausing compliant commands.");
+          ROS_WARN_STREAM_NAMED(NODE_NAME, "Magnitude of compliant command is too large. Pausing compliant commands.");
           for (int j=0; j<delta_theta.size(); ++j)
           {
             delta_theta[j] = 0.;
@@ -116,6 +117,29 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
         delta_theta_msg.data.push_back( delta_theta[i] );
       }
       compliant_velocity_pub_.publish(delta_theta_msg);
+      ROS_INFO_STREAM(delta_theta_msg);
     }
   }
+}
+
+void compliant_command_node::PublishCompliantJointVelocities::readROSParameters()
+{
+  std::size_t error = 0;
+
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/spin_rate", compliance_params_.spin_rate);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/max_allowable_cmd_magnitude", compliance_params_.max_allowable_cmd_magnitude);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/move_group_name", compliance_params_.move_group_name);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/jacobian_frame_name", compliance_params_.jacobian_frame_name);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/force_torque_frame_name", compliance_params_.force_torque_frame_name);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/force_torque_topic", compliance_params_.force_torque_topic);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/low_pass_filter_param", compliance_params_.low_pass_filter_param);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/highest_allowable_force", compliance_params_.highest_allowable_force);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/highest_allowable_torque", compliance_params_.highest_allowable_torque);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/stiffness", compliance_params_.stiffness);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/deadband", compliance_params_.deadband);
+  error += !rosparam_shortcuts::get("", n_, ros::this_node::getName() + "/compliance_library/end_condition_wrench", compliance_params_.end_condition_wrench);
+
+  rosparam_shortcuts::shutdownIfError(ros::this_node::getName(), error);
+
+  // TODO: input checking
 }

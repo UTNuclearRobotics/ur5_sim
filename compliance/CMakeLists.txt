@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   moveit_ros_planning_interface
   roscpp
+  rosparam_shortcuts
   rospy
   sensor_msgs
   std_msgs
