@@ -35,23 +35,19 @@ public:
   {
     readROSParameters();
 
-    // Initialize the compliance object
-    std::vector<double> stiffness = {
-    };
-
-  // Initialize an object of the compliance library.
-  // Use a unique_ptr to avoid memory management issues.
-  // Assume a bias wrench of all zeros
-  geometry_msgs::WrenchStamped bias;
-  compliant_control_ptr_.reset( new compliant_control::CompliantControl (
-    compliance_params_.stiffness,
-    compliance_params_.deadband,
-    compliance_params_.end_condition_wrench,
-    compliance_params_.low_pass_filter_param,
-    bias,
-    compliance_params_.highest_allowable_force,
-    compliance_params_.highest_allowable_torque    
-    ));
+    // Initialize an object of the compliance library.
+    // Use a unique_ptr to avoid memory management issues.
+    // Assume a bias wrench of all zeros
+    geometry_msgs::WrenchStamped bias;
+    compliant_control_ptr_.reset( new compliant_control::CompliantControl (
+      compliance_params_.stiffness,
+      compliance_params_.deadband,
+      compliance_params_.end_condition_wrench,
+      compliance_params_.low_pass_filter_param,
+      bias,
+      compliance_params_.highest_allowable_force,
+      compliance_params_.highest_allowable_torque    
+      ));
 
   	enable_compliance_service_ = n_.advertiseService(
   	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliance, this);
@@ -105,7 +101,7 @@ private:
   void wrenchCallback(const geometry_msgs::WrenchStamped::ConstPtr& msg)
   {
     last_wrench_data_ = *msg;
-    last_wrench_data_.header.frame_id = force_torque_frame_name_;
+    last_wrench_data_.header.frame_id = compliance_params_.force_torque_frame_name;
   }
 
   // Callback for robot state updates
@@ -135,9 +131,6 @@ private:
 
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener tf_listener_;
-  // TODO: do not hard-code these frame names
-  std::string force_torque_frame_name_ = "base";
-  std::string jacobian_frame_name_ = "base_link";
 
   // MoveIt! setup, required to retrieve the Jacobian
   const robot_state::JointModelGroup* joint_model_group_;

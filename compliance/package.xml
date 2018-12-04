@@ -8,6 +8,9 @@
 
   <license>TODO</license>
 
+  <author email="andyz@utexas.edu">Andy Zelenak</author>
+  <author>Nitish Sharma</author>
+
   <buildtool_depend>catkin</buildtool_depend>
   <depend>geometry_msgs</depend>
   <depend>roscpp</depend>

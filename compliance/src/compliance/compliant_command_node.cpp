@@ -43,33 +43,32 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       compliant_control_ptr_->getVelocity(velocity, last_wrench_data_, velocity);
 
       geometry_msgs::Vector3Stamped translational_velocity;
-      translational_velocity.header.frame_id = force_torque_frame_name_;
+      translational_velocity.header.frame_id = compliance_params_.force_torque_frame_name;
       translational_velocity.vector.x = velocity[0];
       translational_velocity.vector.y = velocity[1];
       translational_velocity.vector.z = velocity[2];
 
       geometry_msgs::Vector3Stamped rotational_velocity;
-      rotational_velocity.header.frame_id = force_torque_frame_name_;
+      rotational_velocity.header.frame_id = compliance_params_.force_torque_frame_name;
       rotational_velocity.vector.x = velocity[3];
       rotational_velocity.vector.y = velocity[4];
       rotational_velocity.vector.z = velocity[5];      
 
-      // Transform this Cartesian velocity to the MoveIt! planning frame
-      // TODO: get the MoveIt! planning frame programmatically
+      // Transform this Cartesian velocity to the Jacobian frame
       geometry_msgs::TransformStamped force_torque_to_moveit_tf;
       while (force_torque_to_moveit_tf.header.frame_id == "" && ros::ok())
       {
         try
         {
           force_torque_to_moveit_tf = tf_buffer_.lookupTransform(
-            jacobian_frame_name_,
-            force_torque_frame_name_,
+            compliance_params_.jacobian_frame_name,
+            compliance_params_.force_torque_frame_name,
             ros::Time(0));
         }
         catch (tf2::TransformException &ex)
         {
           ROS_WARN_NAMED(NODE_NAME, "%s",ex.what());
-          ROS_WARN_NAMED(NODE_NAME, "Waiting for the transform from force/torque to moveit_planning_frame to be published.");
+          ROS_WARN_NAMED(NODE_NAME, "Waiting for the transform from force/torque to the Jacobian frame to be published.");
           ros::Duration(0.01).sleep();
           continue;
         }
