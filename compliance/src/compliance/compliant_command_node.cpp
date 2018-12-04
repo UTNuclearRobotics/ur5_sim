@@ -90,7 +90,6 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       // This Jacobian is w.r.t. to the last link
       Eigen::MatrixXd j = kinematic_state_->getJacobian(joint_model_group_);
       // J^T* (J*(J^T)^-1) is the Moore-Penrose pseudo-inverse
-      // TODO: check for singularity
       Eigen::VectorXd delta_theta = (j.transpose() * (j * j.transpose()).inverse()) * cartesian_velocity;
 
       // Check if a command magnitude would be too large.
@@ -117,7 +116,6 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
         delta_theta_msg.data.push_back( delta_theta[i] );
       }
       compliant_velocity_pub_.publish(delta_theta_msg);
-      ROS_INFO_STREAM(delta_theta_msg);
     }
   }
 }
@@ -141,5 +139,27 @@ void compliant_command_node::PublishCompliantJointVelocities::readROSParameters(
 
   rosparam_shortcuts::shutdownIfError(ros::this_node::getName(), error);
 
-  // TODO: input checking
+  // Input checking
+  if ( (compliance_params_.spin_rate <= 0)
+    || (compliance_params_.low_pass_filter_param <= 0)
+    || (compliance_params_.max_allowable_cmd_magnitude <= 0)
+    || (compliance_params_.highest_allowable_force <= 0)
+    || (compliance_params_.highest_allowable_torque <= 0))
+  {
+    ROS_ERROR_STREAM_NAMED(NODE_NAME, "These parameters should be greater than zero:");
+    ROS_ERROR_STREAM_NAMED(NODE_NAME, "spin_rate, low_pass_filter_param, max_allowable_cmd_magnitude, highest_allowable_force, highest_allowable_torque");
+    exit(1);
+  }
+
+  for (std::size_t i=0; i<6; ++i)
+  {
+    if (
+      (compliance_params_.stiffness[i] < 0)
+      || (compliance_params_.deadband[i] < 0)
+      || (compliance_params_.end_condition_wrench[i] < 0))
+    {
+      ROS_ERROR_STREAM_NAMED(NODE_NAME, "stiffness/deadband/end_condition_wrench parameters should be greater than zero.");
+      exit(1);
+    }
+  }
 }

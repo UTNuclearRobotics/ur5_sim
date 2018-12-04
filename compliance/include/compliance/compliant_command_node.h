@@ -39,10 +39,11 @@ public:
     std::vector<double> stiffness = {
     };
 
-  // Initialize an object of the compliance library
+  // Initialize an object of the compliance library.
+  // Use a unique_ptr to avoid memory management issues.
   // Assume a bias wrench of all zeros
   geometry_msgs::WrenchStamped bias;
-  compliant_control_ptr_ = std::make_shared<compliant_control::CompliantControl>(
+  compliant_control_ptr_.reset( new compliant_control::CompliantControl (
     compliance_params_.stiffness,
     compliance_params_.deadband,
     compliance_params_.end_condition_wrench,
@@ -50,7 +51,7 @@ public:
     bias,
     compliance_params_.highest_allowable_force,
     compliance_params_.highest_allowable_torque    
-    );
+    ));
 
   	enable_compliance_service_ = n_.advertiseService(
   	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliance, this);
@@ -119,7 +120,7 @@ private:
 
   // An object to do compliance calculations.
   // Key equation: compliance_velocity[i] = wrench[i]/stiffness[i]
-  std::shared_ptr<compliant_control::CompliantControl> compliant_control_ptr_;
+  std::unique_ptr<compliant_control::CompliantControl> compliant_control_ptr_;
 
 
   bool compliance_enabled_ = true;
