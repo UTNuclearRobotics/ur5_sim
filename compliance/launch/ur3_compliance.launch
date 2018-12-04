@@ -1,0 +1,5 @@
+<launch>
+  <node name="compliant_command_node" pkg="compliance" type="compliant_command_node" output="screen" >
+    <rosparam command="load" file="$(find compliance)/config/compliance_settings.yaml" />
+  </node> 
+</launch>
