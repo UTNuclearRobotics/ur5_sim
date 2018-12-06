@@ -88,10 +88,10 @@ public:
       ));
 
   	enable_compliance_service_ = n_.advertiseService(
-  	  n_.getNamespace() + "toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliance, this);
+  	  n_.getNamespace() + "/" + ros::this_node::getName() + "/toggle_compliance_publication", &PublishCompliantJointVelocities::toggleCompliance, this);
 
     bias_compliance_service_ = n_.advertiseService(
-      n_.getNamespace() + "bias_compliance_calcs", &PublishCompliantJointVelocities::biasCompliantCalcs, this);
+      n_.getNamespace() + "/" + ros::this_node::getName() + "/bias_compliance_calcs", &PublishCompliantJointVelocities::biasCompliantCalcs, this);
 
     wrench_subscriber_ = n_.subscribe(compliance_params_.force_torque_topic, 1, &PublishCompliantJointVelocities::wrenchCallback, this);
 

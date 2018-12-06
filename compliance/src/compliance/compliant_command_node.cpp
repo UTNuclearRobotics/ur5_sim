@@ -63,8 +63,7 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
   while (ros::ok())
   {
     ros::spinOnce();
-    // TODO: do not hard-code this spin rate
-    ros::Duration(0.01).sleep();
+    ros::Rate rate(compliance_params_.spin_rate);
 
     if (compliance_enabled_)
     {
@@ -131,8 +130,7 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       Eigen::VectorXd delta_theta = (j.transpose() * (j * j.transpose()).inverse()) * cartesian_velocity;
 
       // Check if a command magnitude would be too large.
-      // TODO: do not hard-code this threshold
-      double largest_allowable_command = 0.06;
+      double largest_allowable_command = compliance_params_.max_allowable_cmd_magnitude;
       for (int i=0; i<delta_theta.size(); ++i)
       {
         if ( (fabs(delta_theta[i]) > largest_allowable_command) || std::isnan(delta_theta[i]) )
@@ -155,6 +153,8 @@ void compliant_command_node::PublishCompliantJointVelocities::spin()
       }
       compliant_velocity_pub_.publish(delta_theta_msg);
     }
+
+    rate.sleep();
   }
 }
 
