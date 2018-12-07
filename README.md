@@ -23,7 +23,7 @@ http://answers.gazebosim.org/question/14225/how-can-i-turn-off-the-space-navigat
 UR3 Hardware usage:
 ======
 
-roslaunch ur_modern_driver ur3_ros_control.launch robot_ip:=192.168.1.102
+roslaunch nrg_custom_files ur3_ros_control.launch robot_ip:=192.168.1.102
 (OR)
 roslaunch ur_modern_driver ur3_bringup_joint_limited.launch robot_ip:=192.168.1.102
 

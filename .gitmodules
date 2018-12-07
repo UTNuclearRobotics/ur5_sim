@@ -1,0 +1,3 @@
+[submodule "ur_modern_driver"]
+	path = ur_modern_driver
+	url = https://github.com/ros-industrial/ur_modern_driver.git
