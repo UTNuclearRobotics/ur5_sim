@@ -22,6 +22,7 @@ controller_list:
   - name: "compliance_controller"
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
+    compliance_command_timeout: test
     joints:
       - shoulder_pan_joint
       - shoulder_lift_joint

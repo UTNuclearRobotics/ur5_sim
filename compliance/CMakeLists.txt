@@ -37,6 +37,10 @@ add_executable(compliant_command_node src/${PROJECT_NAME}/compliant_command_node
 add_dependencies(compliant_command_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(compliant_command_node ${catkin_LIBRARIES} compliant_control ${Eigen_LIBRARIES})
 
+add_executable(test_compliance_publisher src/${PROJECT_NAME}/test_compliance_publisher.cpp)
+add_dependencies(test_compliance_publisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(test_compliance_publisher ${catkin_LIBRARIES})
+
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
