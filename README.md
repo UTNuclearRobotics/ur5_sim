@@ -36,4 +36,4 @@ roslaunch ur_gazebo ur3_hw_jog_arm.launch
 
 Compliance usage:
 ======
-roslaunch compliance ur3_compliance.launch  (to publish std_msgs/Float64Array velocities on the /compliance_controller/compliance_velocity_adjustment topic)
+roslaunch wrench_to_twist_pub ur3_compliance.launch  (to publish std_msgs/Float64Array velocities on the /compliance_controller/compliance_velocity_adjustment topic)
