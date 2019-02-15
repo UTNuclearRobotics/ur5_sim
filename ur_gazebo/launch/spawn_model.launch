@@ -7,7 +7,7 @@
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <!-- -J: set initial joints -->
   <!-- -z: set initial robot height -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot" respawn="false" output="screen" headless="true"/>
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot" respawn="false" output="screen"/>
 </launch>
 
 <!--
